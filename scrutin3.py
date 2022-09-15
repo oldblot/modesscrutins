@@ -1,73 +1,55 @@
-import csv 
-def scrutin3():
-    candidat5 = []
-    candidat4 = []
-    candidat3 = []
-    candidat2 = []
-    candidat1 = []
+import csv
+
+def RemoveCandidat(tab, IndexStocked):
+    for Ligne in tab:
+        try:
+            Ligne.pop(IndexStocked)
+        except:
+            pass
+    return (tab)
+
+def scrutin3(tab):
+    result = 1000000
+    temporaire = 0
+    IndexStocked = 0
+    for index in range(1, len(tab)-1):
+        for Ligne in tab:
+            try:
+                if (Ligne[index] == "1" or Ligne[index] == 1):
+                    temporaire += int(Ligne[0])
+                    #print("temporaire = ", temporaire)
+            except:
+                pass
+        if (result > temporaire and temporaire > 0):
+            result = temporaire
+            IndexStocked = index
+        temporaire = 0
+    #print(result, IndexStocked)
+    return (tab, IndexStocked)
+
+def GetTab():
     with open("tableauvote.csv", newline='',encoding='utf-8') as csvfile:
         tableau = csv.reader(csvfile)
-        tab = list(tableau)                              
-        #print(index)
-        for Ligne in tab:
-            #print(Ligne[3])
-            #print(Ligne[index])
-            if Ligne[5] == "1":
-                candidat5.append(int(Ligne[0]))
-            else:
-                pass
-            if Ligne[4] == "1":
-                candidat4.append(int(Ligne[0]))
-            else:
-                pass
-            if Ligne[3] == "1":
-                candidat3.append(int(Ligne[0]))
-            else:
-                pass
-            if Ligne[2] == "1":
-                candidat2.append(int(Ligne[0]))
-            else:
-                pass
-            if Ligne[1] == "1":
-                candidat1.append(int(Ligne[0]))
-            else:
-                pass
-        resultat1 = 0
-        for chiffre in candidat5:
+        tab = list(tableau)
+    return tab
+
+def ModifyTab(tab):
+    for a, Ligne in enumerate(tab):
+        for i, case in enumerate(Ligne):
             try:
-                resultat1 += int(chiffre)
+                if (int(case) > 1 and int(case) < 6):
+                    tab[a][i] = int(tab[a][i]) - 1
             except:
                 pass
-        print(resultat1)
-        resultat2 = 0
-        for chiffre in candidat4:
-            try:
-                resultat2 += int(chiffre)
-            except:
-                pass
-        print(resultat2)
-        resultat3 = 0
-        for chiffre in candidat3:
-            try:
-                resultat3 += int(chiffre)
-            except:
-                pass
-        print(resultat3)
-        resultat4 = 0
-        for chiffre in candidat2:
-            try:
-                resultat4 += int(chiffre)
-            except:
-                pass
-        print(resultat4)
-        resultat5 = 0
-        for chiffre in candidat1:
-            try:
-                resultat5 += int(chiffre)
-            except:
-                pass
-        print(resultat5)
+    return (tab)
+
+def MainLoop():
+    tab = GetTab()
+    #print(tab)
+    while len(tab[0]) > 1:
+        print(tab)
+        tab, IndexStocked = scrutin3(tab)
+        tab = RemoveCandidat(tab, IndexStocked)
+        tab = ModifyTab(tab)
         
-
-
-scrutin3()
+MainLoop()
