@@ -31,6 +31,12 @@ def GetTab():
     with open("tableauvote.csv", newline='',encoding='utf-8') as csvfile:
         tableau = csv.reader(csvfile)
         tab = list(tableau)
+        for a, Ligne in enumerate(tab):
+            for i, case in enumerate(Ligne):
+                try:
+                    tab[a][i] = int(case)
+                except:
+                    pass
     return tab
 
 def ModifyTab(tab):
@@ -38,7 +44,14 @@ def ModifyTab(tab):
         for i, case in enumerate(Ligne):
             try:
                 if (int(case) > 1 and int(case) < 6):
-                    tab[a][i] = int(tab[a][i]) - 1
+                    for _ in range(1, len(Ligne)):
+                        try:
+                            if ((case-1) not in Ligne):
+                                tab[a][i] = int(tab[a][i]) - 1
+                                tab = ModifyTab(tab)
+                                break
+                        except:
+                            pass
             except:
                 pass
     return (tab)
@@ -46,10 +59,10 @@ def ModifyTab(tab):
 def MainLoop():
     tab = GetTab()
     #print(tab)
-    while len(tab[0]) > 1:
-        print(tab)
+    while len(tab[0]) > 2:
         tab, IndexStocked = scrutin3(tab)
         tab = RemoveCandidat(tab, IndexStocked)
         tab = ModifyTab(tab)
-        
+    print("Le vainqueur est le", tab[0][1], "!")
+
 MainLoop()
